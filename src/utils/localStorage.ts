@@ -1,3 +1,4 @@
+
 import { UserIdentity } from './identityGenerator';
 
 // Storage keys
@@ -23,6 +24,11 @@ export const getUserIdentity = (): UserIdentity | null => {
     console.error("Error parsing user identity", error);
     return null;
   }
+};
+
+// Clear user identity from localStorage
+export const clearUserIdentity = (): void => {
+  localStorage.removeItem(USER_IDENTITY_KEY);
 };
 
 // Save counts to localStorage

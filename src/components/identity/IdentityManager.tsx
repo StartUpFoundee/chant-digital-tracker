@@ -4,9 +4,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
 import { UserIdentity, decodeTransferCode, generateTransferCode } from '@/utils/identityGenerator';
-import { exportUserData, mergeImportedData } from '@/utils/localStorage';
-import { QrCode, Download, Copy, Upload, Share2 } from 'lucide-react';
+import { exportUserData, mergeImportedData, clearUserIdentity } from '@/utils/localStorage';
+import { QrCode, Download, Copy, Upload, Share2, HelpCircle, LogOut } from 'lucide-react';
 import { toast } from '@/components/ui/sonner';
 
 interface IdentityManagerProps {
@@ -18,6 +19,7 @@ const IdentityManager: React.FC<IdentityManagerProps> = ({ identity, lifetimeCou
   const [isOpen, setIsOpen] = useState(false);
   const [transferCode, setTransferCode] = useState('');
   const [importCode, setImportCode] = useState('');
+  const [activeTab, setActiveTab] = useState('export');
   
   const handleGenerateTransferCode = () => {
     const data = {
@@ -83,111 +85,174 @@ const IdentityManager: React.FC<IdentityManagerProps> = ({ identity, lifetimeCou
     }
   };
 
+  const handleLogout = () => {
+    if (confirm("Are you sure you want to logout? You can restore your identity later with your transfer code.")) {
+      clearUserIdentity();
+      window.location.reload();
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" className="w-full bg-zinc-800 hover:bg-zinc-700 border-zinc-600 text-amber-400">
-          Manage Spiritual Identity
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-md bg-zinc-800 border-zinc-600 text-white">
-        <DialogHeader>
-          <DialogTitle className="text-amber-400">Spiritual Journey Management</DialogTitle>
-        </DialogHeader>
-        
-        <Tabs defaultValue="export">
-          <TabsList className="grid grid-cols-2 bg-zinc-700">
-            <TabsTrigger value="export">Export Journey</TabsTrigger>
-            <TabsTrigger value="import">Import Journey</TabsTrigger>
-          </TabsList>
+    <div className="flex flex-col gap-4">
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogTrigger asChild>
+          <Button variant="outline" className="w-full bg-zinc-800 hover:bg-zinc-700 border-zinc-600 text-amber-400">
+            <Share2 className="mr-2 h-4 w-4" />
+            Manage Spiritual Identity
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-md bg-zinc-800 border-zinc-600 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-amber-400">Spiritual Journey Management</DialogTitle>
+          </DialogHeader>
           
-          <TabsContent value="export" className="space-y-4 mt-4">
-            <div>
-              <h3 className="text-sm font-medium text-gray-300 mb-2">Transfer to Another Device</h3>
-              <p className="text-xs text-gray-400 mb-4">Generate a code to transfer your spiritual journey to another device</p>
-              
-              {!transferCode ? (
-                <Button 
-                  className="w-full bg-amber-500 hover:bg-amber-600 text-black mb-4"
-                  onClick={handleGenerateTransferCode}
-                >
-                  <Share2 className="mr-2 h-4 w-4" />
-                  Generate Transfer Code
-                </Button>
-              ) : (
-                <div className="space-y-3">
-                  <div className="bg-zinc-700 p-3 rounded-md break-all text-xs text-amber-200">
-                    {transferCode}
-                  </div>
+          <Tabs defaultValue="export" value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid grid-cols-3 bg-zinc-700">
+              <TabsTrigger value="export">Export Journey</TabsTrigger>
+              <TabsTrigger value="import">Import Journey</TabsTrigger>
+              <TabsTrigger value="help">Help</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="export" className="space-y-4 mt-4">
+              <div>
+                <h3 className="text-sm font-medium text-gray-300 mb-2">Transfer to Another Device</h3>
+                <p className="text-xs text-gray-400 mb-4">Generate a code to transfer your spiritual journey to another device</p>
+                
+                {!transferCode ? (
                   <Button 
-                    variant="outline"
-                    className="w-full bg-zinc-700 hover:bg-zinc-600 text-amber-400"
-                    onClick={handleCopyTransferCode}
+                    className="w-full bg-amber-500 hover:bg-amber-600 text-black mb-4"
+                    onClick={handleGenerateTransferCode}
                   >
-                    <Copy className="mr-2 h-4 w-4" />
-                    Copy Code
+                    <Share2 className="mr-2 h-4 w-4" />
+                    Generate Transfer Code
                   </Button>
-                </div>
-              )}
-            </div>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="bg-zinc-700 p-3 rounded-md break-all text-xs text-amber-200">
+                      {transferCode}
+                    </div>
+                    <Button 
+                      variant="outline"
+                      className="w-full bg-zinc-700 hover:bg-zinc-600 text-amber-400"
+                      onClick={handleCopyTransferCode}
+                    >
+                      <Copy className="mr-2 h-4 w-4" />
+                      Copy Code
+                    </Button>
+                  </div>
+                )}
+              </div>
+              
+              <div className="pt-4 border-t border-zinc-700">
+                <h3 className="text-sm font-medium text-gray-300 mb-2">Download Journey Data</h3>
+                <p className="text-xs text-gray-400 mb-4">Save your complete journey data as a JSON file</p>
+                
+                <Button 
+                  variant="outline" 
+                  className="w-full bg-zinc-700 hover:bg-zinc-600 text-amber-400"
+                  onClick={handleDownloadData}
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Download Journey Data
+                </Button>
+              </div>
+              
+              <div className="pt-4 border-t border-zinc-700">
+                <h3 className="text-sm font-medium text-gray-300 mb-2">QR Code (Coming Soon)</h3>
+                <p className="text-xs text-gray-400 mb-4">Generate a QR code to quickly transfer your journey</p>
+                
+                <Button 
+                  variant="outline" 
+                  disabled
+                  className="w-full bg-zinc-700 text-gray-500"
+                >
+                  <QrCode className="mr-2 h-4 w-4" />
+                  Generate QR Code
+                </Button>
+              </div>
+            </TabsContent>
             
-            <div className="pt-4 border-t border-zinc-700">
-              <h3 className="text-sm font-medium text-gray-300 mb-2">Download Journey Data</h3>
-              <p className="text-xs text-gray-400 mb-4">Save your complete journey data as a JSON file</p>
+            <TabsContent value="import" className="space-y-4 mt-4">
+              <div>
+                <h3 className="text-sm font-medium text-gray-300 mb-2">Import Journey Data</h3>
+                <p className="text-xs text-gray-400 mb-4">
+                  Enter a transfer code to import your journey from another device.
+                  This will merge with your existing journey data.
+                </p>
+                
+                <Input
+                  placeholder="Paste transfer code here"
+                  value={importCode}
+                  onChange={(e) => setImportCode(e.target.value)}
+                  className="bg-zinc-700 border-zinc-600 text-white mb-3"
+                />
+                
+                <Button 
+                  className="w-full bg-amber-500 hover:bg-amber-600 text-black"
+                  onClick={handleImport}
+                  disabled={!importCode}
+                >
+                  <Upload className="mr-2 h-4 w-4" />
+                  Import Journey
+                </Button>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="help" className="space-y-4 mt-4">
+              <Card className="bg-zinc-700 border-zinc-600">
+                <CardContent className="p-4">
+                  <h3 className="text-amber-400 text-sm font-medium mb-2">What is Spiritual Identity?</h3>
+                  <p className="text-xs text-gray-300 mb-3">Your spiritual identity connects your practice across all devices. It helps track your lifetime mantra count and journey progress.</p>
+                  
+                  <h4 className="text-amber-400 text-xs font-medium mb-1">How to use:</h4>
+                  <ul className="text-xs text-gray-300 list-disc pl-4 space-y-1">
+                    <li>Generate a transfer code after significant practice</li>
+                    <li>Copy the transfer code to use on another device</li>
+                    <li>Download journey data as backup</li>
+                  </ul>
+                </CardContent>
+              </Card>
+              
+              <Card className="bg-zinc-700 border-zinc-600">
+                <CardContent className="p-4">
+                  <h3 className="text-amber-400 text-sm font-medium mb-2">आध्यात्मिक पहचान क्या है?</h3>
+                  <p className="text-xs text-gray-300 mb-3">आपकी आध्यात्मिक पहचान आपके अभ्यास को सभी उपकरणों पर जोड़ती है। यह आपके जीवनकाल मंत्र गणना और यात्रा की प्रगति को ट्रैक करने में मदद करती है।</p>
+                  
+                  <h4 className="text-amber-400 text-xs font-medium mb-1">उपयोग कैसे करें:</h4>
+                  <ul className="text-xs text-gray-300 list-disc pl-4 space-y-1">
+                    <li>महत्वपूर्ण अभ्यास के बाद ट्रांसफर कोड जनरेट करें</li>
+                    <li>दूसरे डिवाइस पर उपयोग करने के लिए ट्रांसफर कोड कॉपी करें</li>
+                    <li>बैकअप के रूप में यात्रा डेटा डाउनलोड करें</li>
+                  </ul>
+                </CardContent>
+              </Card>
               
               <Button 
                 variant="outline" 
-                className="w-full bg-zinc-700 hover:bg-zinc-600 text-amber-400"
-                onClick={handleDownloadData}
+                className="w-full bg-red-900/30 hover:bg-red-900/50 text-red-300 border border-red-700/50"
+                onClick={handleLogout}
               >
-                <Download className="mr-2 h-4 w-4" />
-                Download Journey Data
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout / Change Identity
               </Button>
-            </div>
-            
-            <div className="pt-4 border-t border-zinc-700">
-              <h3 className="text-sm font-medium text-gray-300 mb-2">QR Code (Coming Soon)</h3>
-              <p className="text-xs text-gray-400 mb-4">Generate a QR code to quickly transfer your journey</p>
-              
-              <Button 
-                variant="outline" 
-                disabled
-                className="w-full bg-zinc-700 text-gray-500"
-              >
-                <QrCode className="mr-2 h-4 w-4" />
-                Generate QR Code
-              </Button>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="import" className="space-y-4 mt-4">
-            <div>
-              <h3 className="text-sm font-medium text-gray-300 mb-2">Import Journey Data</h3>
-              <p className="text-xs text-gray-400 mb-4">
-                Enter a transfer code to import your journey from another device.
-                This will merge with your existing journey data.
-              </p>
-              
-              <Input
-                placeholder="Paste transfer code here"
-                value={importCode}
-                onChange={(e) => setImportCode(e.target.value)}
-                className="bg-zinc-700 border-zinc-600 text-white mb-3"
-              />
-              
-              <Button 
-                className="w-full bg-amber-500 hover:bg-amber-600 text-black"
-                onClick={handleImport}
-                disabled={!importCode}
-              >
-                <Upload className="mr-2 h-4 w-4" />
-                Import Journey
-              </Button>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </DialogContent>
-    </Dialog>
+            </TabsContent>
+          </Tabs>
+        </DialogContent>
+      </Dialog>
+      
+      <Button 
+        variant="ghost" 
+        size="sm"
+        className="text-gray-400 hover:text-amber-400 hover:bg-zinc-800/50"
+        onClick={() => {
+          setActiveTab('help');
+          setIsOpen(true);
+        }}
+      >
+        <HelpCircle className="mr-2 h-4 w-4" />
+        How to use spiritual identity?
+      </Button>
+    </div>
   );
 };
 
