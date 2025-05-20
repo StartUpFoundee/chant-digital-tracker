@@ -63,16 +63,16 @@ const IdentityWelcome: React.FC<IdentityWelcomeProps> = ({ onComplete }) => {
   };
 
   return (
-    <div className="w-full max-w-sm mx-auto">
-      <div className="flex flex-col items-center justify-center p-6 bg-zinc-800 dark:bg-zinc-900 rounded-lg shadow-lg border border-zinc-700">
+    <div className="w-full max-w-xs mx-auto">
+      <div className="flex flex-col items-center justify-center p-4 bg-zinc-800 dark:bg-zinc-900 rounded-lg shadow-lg border border-zinc-700">
         {step === 1 && (
           <div className="w-full text-center">
-            <h2 className="text-2xl font-bold text-amber-400 mb-6">Welcome to Your Spiritual Journey</h2>
-            <p className="text-gray-300 mb-6">Begin by choosing a name for your spiritual journey</p>
+            <h2 className="text-xl font-bold text-amber-400 mb-4">Create Your Profile</h2>
+            <p className="text-gray-300 mb-4 text-sm">Choose a name for your spiritual journey</p>
             
             <form onSubmit={handleNameSubmit} className="space-y-4">
               <Input
-                placeholder="Enter your spiritual name"
+                placeholder="Your spiritual name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="bg-zinc-700 border-zinc-600 text-white"
@@ -91,14 +91,14 @@ const IdentityWelcome: React.FC<IdentityWelcomeProps> = ({ onComplete }) => {
         
         {step === 2 && (
           <div className="w-full">
-            <h2 className="text-xl font-bold text-amber-400 mb-4 text-center">Choose Your Spiritual Symbol</h2>
+            <h2 className="text-lg font-bold text-amber-400 mb-3 text-center">Choose Your Symbol</h2>
             
-            <div className="grid grid-cols-4 gap-2 mb-6">
+            <div className="grid grid-cols-4 gap-2 mb-4">
               {SPIRITUAL_SYMBOLS.map((symbol) => (
                 <button
                   key={symbol.id}
                   onClick={() => handleSymbolSelect(symbol.id)}
-                  className={`aspect-square p-2 flex items-center justify-center rounded-lg text-3xl transition-colors ${
+                  className={`aspect-square p-2 flex items-center justify-center rounded-lg text-2xl transition-colors ${
                     selectedSymbol === symbol.id 
                       ? 'bg-amber-500 text-white' 
                       : 'bg-zinc-700 hover:bg-zinc-600 text-gray-200'
@@ -110,7 +110,7 @@ const IdentityWelcome: React.FC<IdentityWelcomeProps> = ({ onComplete }) => {
               ))}
             </div>
             
-            <div className="flex gap-4">
+            <div className="flex gap-2">
               <Button 
                 variant="outline"
                 className="flex-1 border-zinc-600"
@@ -123,7 +123,7 @@ const IdentityWelcome: React.FC<IdentityWelcomeProps> = ({ onComplete }) => {
                 onClick={handleComplete}
                 disabled={!selectedSymbol || isGenerating}
               >
-                {isGenerating ? "Creating..." : "Begin Journey"}
+                {isGenerating ? "Creating..." : "Start"}
               </Button>
             </div>
           </div>
@@ -132,7 +132,7 @@ const IdentityWelcome: React.FC<IdentityWelcomeProps> = ({ onComplete }) => {
       
       {showHelp && <IdentityHelp />}
       
-      <div className="mt-4 text-center">
+      <div className="mt-3 text-center">
         <Button 
           variant="ghost"
           size="sm"

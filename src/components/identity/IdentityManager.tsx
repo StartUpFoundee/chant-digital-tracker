@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { UserIdentity, decodeTransferCode, generateTransferCode } from '@/utils/identityGenerator';
 import { exportUserData, mergeImportedData, clearUserIdentity } from '@/utils/localStorage';
-import { QrCode, Download, Copy, Upload, Share2, HelpCircle, LogOut } from 'lucide-react';
+import { Download, Copy, Upload, Share2, HelpCircle, LogOut } from 'lucide-react';
 import { toast } from '@/components/ui/sonner';
 
 interface IdentityManagerProps {
@@ -35,7 +35,7 @@ const IdentityManager: React.FC<IdentityManagerProps> = ({ identity, lifetimeCou
     if (transferCode) {
       navigator.clipboard.writeText(transferCode)
         .then(() => {
-          toast.success("Transfer code copied to clipboard");
+          toast.success("Code copied to clipboard");
         })
         .catch((err) => {
           console.error("Could not copy text: ", err);
@@ -93,42 +93,42 @@ const IdentityManager: React.FC<IdentityManagerProps> = ({ identity, lifetimeCou
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-3">
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           <Button variant="outline" className="w-full bg-zinc-800 hover:bg-zinc-700 border-zinc-600 text-amber-400">
             <Share2 className="mr-2 h-4 w-4" />
-            Manage Spiritual Identity
+            Manage Profile
           </Button>
         </DialogTrigger>
-        <DialogContent className="max-w-md bg-zinc-800 border-zinc-600 text-white">
+        <DialogContent className="max-w-xs bg-zinc-800 border-zinc-600 text-white">
           <DialogHeader>
-            <DialogTitle className="text-amber-400">Spiritual Journey Management</DialogTitle>
+            <DialogTitle className="text-amber-400">Manage Profile</DialogTitle>
           </DialogHeader>
           
           <Tabs defaultValue="export" value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid grid-cols-3 bg-zinc-700">
-              <TabsTrigger value="export">Export Journey</TabsTrigger>
-              <TabsTrigger value="import">Import Journey</TabsTrigger>
+              <TabsTrigger value="export">Export</TabsTrigger>
+              <TabsTrigger value="import">Import</TabsTrigger>
               <TabsTrigger value="help">Help</TabsTrigger>
             </TabsList>
             
-            <TabsContent value="export" className="space-y-4 mt-4">
+            <TabsContent value="export" className="space-y-3 mt-3">
               <div>
-                <h3 className="text-sm font-medium text-gray-300 mb-2">Transfer to Another Device</h3>
-                <p className="text-xs text-gray-400 mb-4">Generate a code to transfer your spiritual journey to another device</p>
+                <h3 className="text-sm font-medium text-gray-300 mb-2">Transfer Code</h3>
+                <p className="text-xs text-gray-400 mb-2">Generate a code to transfer to another device</p>
                 
                 {!transferCode ? (
                   <Button 
-                    className="w-full bg-amber-500 hover:bg-amber-600 text-black mb-4"
+                    className="w-full bg-amber-500 hover:bg-amber-600 text-black mb-3"
                     onClick={handleGenerateTransferCode}
                   >
                     <Share2 className="mr-2 h-4 w-4" />
-                    Generate Transfer Code
+                    Generate Code
                   </Button>
                 ) : (
-                  <div className="space-y-3">
-                    <div className="bg-zinc-700 p-3 rounded-md break-all text-xs text-amber-200">
+                  <div className="space-y-2">
+                    <div className="bg-zinc-700 p-2 rounded-md break-all text-xs text-amber-200">
                       {transferCode}
                     </div>
                     <Button 
@@ -143,9 +143,9 @@ const IdentityManager: React.FC<IdentityManagerProps> = ({ identity, lifetimeCou
                 )}
               </div>
               
-              <div className="pt-4 border-t border-zinc-700">
-                <h3 className="text-sm font-medium text-gray-300 mb-2">Download Journey Data</h3>
-                <p className="text-xs text-gray-400 mb-4">Save your complete journey data as a JSON file</p>
+              <div className="pt-3 border-t border-zinc-700">
+                <h3 className="text-sm font-medium text-gray-300 mb-2">Backup Data</h3>
+                <p className="text-xs text-gray-400 mb-2">Save your journey data</p>
                 
                 <Button 
                   variant="outline" 
@@ -153,38 +153,23 @@ const IdentityManager: React.FC<IdentityManagerProps> = ({ identity, lifetimeCou
                   onClick={handleDownloadData}
                 >
                   <Download className="mr-2 h-4 w-4" />
-                  Download Journey Data
-                </Button>
-              </div>
-              
-              <div className="pt-4 border-t border-zinc-700">
-                <h3 className="text-sm font-medium text-gray-300 mb-2">QR Code (Coming Soon)</h3>
-                <p className="text-xs text-gray-400 mb-4">Generate a QR code to quickly transfer your journey</p>
-                
-                <Button 
-                  variant="outline" 
-                  disabled
-                  className="w-full bg-zinc-700 text-gray-500"
-                >
-                  <QrCode className="mr-2 h-4 w-4" />
-                  Generate QR Code
+                  Download Backup
                 </Button>
               </div>
             </TabsContent>
             
-            <TabsContent value="import" className="space-y-4 mt-4">
+            <TabsContent value="import" className="space-y-3 mt-3">
               <div>
-                <h3 className="text-sm font-medium text-gray-300 mb-2">Import Journey Data</h3>
-                <p className="text-xs text-gray-400 mb-4">
-                  Enter a transfer code to import your journey from another device.
-                  This will merge with your existing journey data.
+                <h3 className="text-sm font-medium text-gray-300 mb-2">Import Journey</h3>
+                <p className="text-xs text-gray-400 mb-2">
+                  Enter a transfer code to import your journey
                 </p>
                 
                 <Input
-                  placeholder="Paste transfer code here"
+                  placeholder="Paste code here"
                   value={importCode}
                   onChange={(e) => setImportCode(e.target.value)}
-                  className="bg-zinc-700 border-zinc-600 text-white mb-3"
+                  className="bg-zinc-700 border-zinc-600 text-white mb-2"
                 />
                 
                 <Button 
@@ -198,31 +183,25 @@ const IdentityManager: React.FC<IdentityManagerProps> = ({ identity, lifetimeCou
               </div>
             </TabsContent>
             
-            <TabsContent value="help" className="space-y-4 mt-4">
+            <TabsContent value="help" className="space-y-3 mt-3">
               <Card className="bg-zinc-700 border-zinc-600">
-                <CardContent className="p-4">
-                  <h3 className="text-amber-400 text-sm font-medium mb-2">What is Spiritual Identity?</h3>
-                  <p className="text-xs text-gray-300 mb-3">Your spiritual identity connects your practice across all devices. It helps track your lifetime mantra count and journey progress.</p>
-                  
-                  <h4 className="text-amber-400 text-xs font-medium mb-1">How to use:</h4>
+                <CardContent className="p-3">
+                  <h3 className="text-amber-400 text-sm font-medium mb-2">How to use:</h3>
                   <ul className="text-xs text-gray-300 list-disc pl-4 space-y-1">
-                    <li>Generate a transfer code after significant practice</li>
-                    <li>Copy the transfer code to use on another device</li>
-                    <li>Download journey data as backup</li>
+                    <li>Generate a transfer code to use on another device</li>
+                    <li>Download a backup file to save your data</li>
+                    <li>Import your journey using a transfer code</li>
                   </ul>
                 </CardContent>
               </Card>
               
               <Card className="bg-zinc-700 border-zinc-600">
-                <CardContent className="p-4">
-                  <h3 className="text-amber-400 text-sm font-medium mb-2">आध्यात्मिक पहचान क्या है?</h3>
-                  <p className="text-xs text-gray-300 mb-3">आपकी आध्यात्मिक पहचान आपके अभ्यास को सभी उपकरणों पर जोड़ती है। यह आपके जीवनकाल मंत्र गणना और यात्रा की प्रगति को ट्रैक करने में मदद करती है।</p>
-                  
-                  <h4 className="text-amber-400 text-xs font-medium mb-1">उपयोग कैसे करें:</h4>
+                <CardContent className="p-3">
+                  <h3 className="text-amber-400 text-sm font-medium mb-2">उपयोग कैसे करें:</h3>
                   <ul className="text-xs text-gray-300 list-disc pl-4 space-y-1">
-                    <li>महत्वपूर्ण अभ्यास के बाद ट्रांसफर कोड जनरेट करें</li>
-                    <li>दूसरे डिवाइस पर उपयोग करने के लिए ट्रांसफर कोड कॉपी करें</li>
-                    <li>बैकअप के रूप में यात्रा डेटा डाउनलोड करें</li>
+                    <li>दूसरे डिवाइस पर उपयोग करने के लिए ट्रांसफर कोड बनाएं</li>
+                    <li>अपना डेटा सहेजने के लिए बैकअप फ़ाइल डाउनलोड करें</li>
+                    <li>ट्रांसफर कोड का उपयोग करके अपनी यात्रा आयात करें</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -233,7 +212,7 @@ const IdentityManager: React.FC<IdentityManagerProps> = ({ identity, lifetimeCou
                 onClick={handleLogout}
               >
                 <LogOut className="mr-2 h-4 w-4" />
-                Logout / Change Identity
+                Change Identity
               </Button>
             </TabsContent>
           </Tabs>
@@ -250,7 +229,7 @@ const IdentityManager: React.FC<IdentityManagerProps> = ({ identity, lifetimeCou
         }}
       >
         <HelpCircle className="mr-2 h-4 w-4" />
-        How to use spiritual identity?
+        Need Help?
       </Button>
     </div>
   );
