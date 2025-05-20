@@ -90,6 +90,55 @@
   }
 
   body {
-    @apply bg-black text-white;
+    @apply bg-black text-white transition-colors duration-200;
+  }
+  
+  /* Light mode specific styles */
+  .light body {
+    @apply bg-amber-50 text-zinc-900;
+  }
+  
+  .light .bg-zinc-800\/80 {
+    @apply bg-white/80;
+  }
+  
+  .light .bg-zinc-800 {
+    @apply bg-amber-50;
+  }
+  
+  .light .bg-zinc-900 {
+    @apply bg-white;
+  }
+  
+  .light .border-zinc-700 {
+    @apply border-amber-200;
+  }
+  
+  .light .text-gray-300 {
+    @apply text-zinc-700;
+  }
+  
+  .light .text-gray-400 {
+    @apply text-zinc-600;
+  }
+  
+  .light .bg-zinc-800\/50 {
+    @apply bg-white/50;
+  }
+  
+  .light .text-white {
+    @apply text-zinc-900;
+  }
+  
+  .light .hover\:bg-zinc-800:hover {
+    @apply hover:bg-amber-100;
+  }
+  
+  .light .hover\:bg-zinc-700:hover {
+    @apply hover:bg-amber-200;
+  }
+  
+  .light .bg-zinc-700 {
+    @apply bg-amber-100;
   }
 }

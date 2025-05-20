@@ -5,6 +5,7 @@ import { toast } from "@/components/ui/sonner";
 import CompletionAlert from "@/components/CompletionAlert";
 import TargetSelector from "@/components/TargetSelector";
 import { Hand } from "lucide-react";
+import { getUserIdentity } from "@/utils/localStorage";
 
 const ManualCounter: React.FC = () => {
   const [targetCount, setTargetCount] = useState<number | null>(null);
@@ -43,7 +44,9 @@ const ManualCounter: React.FC = () => {
         event.key === "MediaPlayPause" ||
         event.code === "KeyPlus" ||
         event.code === "KeyMinus" ||
-        event.code === "Space"
+        event.code === "Space" ||
+        event.key === "+" ||
+        event.key === "-"
       ) {
         if (targetCount !== null) {
           incrementCount();
@@ -111,6 +114,10 @@ const ManualCounter: React.FC = () => {
   };
 
   const progressPercentage = targetCount ? (currentCount / targetCount) * 100 : 0;
+  
+  // Get user identity if available for the symbol
+  const identity = getUserIdentity();
+  const symbol = identity?.symbol || "ॐ";
 
   if (targetCount === null) {
     return <TargetSelector onSelectTarget={handleSelectTarget} />;
@@ -149,7 +156,7 @@ const ManualCounter: React.FC = () => {
             className="w-48 h-48 rounded-full bg-amber-500 flex items-center justify-center hover:bg-amber-600 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-black"
           >
             <div className="text-white text-5xl font-bold">
-              <div className="text-3xl mb-2">ॐ</div>
+              <div className="text-3xl mb-2">{symbol}</div>
               <div>{currentCount}</div>
             </div>
           </button>
