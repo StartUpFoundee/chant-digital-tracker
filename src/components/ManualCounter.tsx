@@ -5,7 +5,7 @@ import { toast } from "@/components/ui/sonner";
 import CompletionAlert from "@/components/CompletionAlert";
 import TargetSelector from "@/components/TargetSelector";
 import { Hand } from "lucide-react";
-import { getUserIdentity } from "@/utils/localStorage";
+import { getCounts, saveCounts } from "@/utils/localStorage";
 
 const ManualCounter: React.FC = () => {
   const [targetCount, setTargetCount] = useState<number | null>(null);
@@ -16,22 +16,9 @@ const ManualCounter: React.FC = () => {
   
   // Load saved counts from localStorage on component mount
   useEffect(() => {
-    const savedLifetimeCount = localStorage.getItem('lifetimeCount');
-    const savedTodayCount = localStorage.getItem('todayCount');
-    const savedLastDate = localStorage.getItem('lastCountDate');
-    
-    if (savedLifetimeCount) {
-      setLifetimeCount(parseInt(savedLifetimeCount, 10));
-    }
-    
-    const today = new Date().toDateString();
-    if (savedTodayCount && savedLastDate === today) {
-      setTodayCount(parseInt(savedTodayCount, 10));
-    } else {
-      // Reset today's count if it's a new day
-      localStorage.setItem('todayCount', '0');
-      localStorage.setItem('lastCountDate', today);
-    }
+    const { lifetimeCount: savedLifetime, todayCount: savedToday } = getCounts();
+    setLifetimeCount(savedLifetime);
+    setTodayCount(savedToday);
   }, []);
 
   // Listen for volume and media button events
@@ -80,9 +67,7 @@ const ManualCounter: React.FC = () => {
     setTodayCount(newTodayCount);
     
     // Save to localStorage
-    localStorage.setItem('lifetimeCount', newLifetimeCount.toString());
-    localStorage.setItem('todayCount', newTodayCount.toString());
-    localStorage.setItem('lastCountDate', new Date().toDateString());
+    saveCounts(newLifetimeCount, newTodayCount);
     
     // Show toast
     toast(`Mantra counted: ${newCount}`, {
@@ -115,9 +100,8 @@ const ManualCounter: React.FC = () => {
 
   const progressPercentage = targetCount ? (currentCount / targetCount) * 100 : 0;
   
-  // Get user identity if available for the symbol
-  const identity = getUserIdentity();
-  const symbol = identity?.symbol || "ॐ";
+  // Use a default symbol since identity was removed
+  const symbol = "ॐ";
 
   if (targetCount === null) {
     return <TargetSelector onSelectTarget={handleSelectTarget} />;
